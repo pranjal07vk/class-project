@@ -1,4 +1,5 @@
 import User from "../models/user.model.js"
+import bcrypt from 'bcrypt' 
 
 //register
 
@@ -29,10 +30,14 @@ export const registerUser = async (req, res) => {
             return res.status(400).json({ message: "Password should be at least 6 characters long" })
         }
 
+        // pasword security
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt)
+
         const newUser = await User.create({
             name,
             email,
-            password,
+            password : hashedPassword,
             username
         })
 
